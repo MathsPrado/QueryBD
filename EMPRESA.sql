@@ -2932,18 +2932,24 @@ order by c.descr desc
 /* Aqui começam os exercícios feitos por mim*/
 /* Mostre a descrição e preço do produto mais caro*/
 /*--------------------------------------------------------------*/
+
+
 select TOP 1 Descr as 'Descrição', Preco as 'Preço'
 from Produtos
 order by preco desc
 
 /* Apresente o número e a data dos pedidos que tiveram os cinco menores fretes*/
 /*--------------------------------------------------------------*/
+
+
 select TOP 5 NumPed as 'Número do Pedido', DataPed as 'Data dos Pedidos'
 from Pedidos
 order by Frete
 /* Mostre o nome e o cargo de todos os clientes e de todos os funcionários do reino unido(OBS: Utilize Union)*/
 /* OBS: O "'Clientes' as Tipo" faz com que na tabela apareça o campo tipo para que consiga-se verificar se é cliente ou funcionário*/
 /*--------------------------------------------------------------*/
+
+
 select Nome as 'Nome', Cargo as 'Cargo', 'Clientes' as Tipo
 from Clientes
 where Pais = 'Reino Unido'
@@ -2953,26 +2959,36 @@ from Funcionarios
 where Pais = 'Reino Unido'
 /* Exiba o nome, o sobrenome, o cargo e o salário dos três funcionários que recebem o maior salário*/
 /*--------------------------------------------------------------*/
+
+
 select TOP 3 Nome as 'Nome',Sobrenome as 'Sobrenome', Cargo as 'Cargo',Salario as 'Salário'
 from Funcionarios  
 order by Salario DESC
 /* Exiba o nome e sobrenome do funcionário mais velho*/
 /*--------------------------------------------------------------*/
+
+
 Select TOP 1 nome as 'Nome', Sobrenome as 'Sobrenome'
 from Funcionarios
 order by DataNasc
 /* Mostre todos os dados dos cinco pedidos mais recentes*/
 /*--------------------------------------------------------------*/
+
+
 select TOP 5 *
 from Pedidos
 order by DataPed DESC
 /* Mostre todos os dados dos seis últimos pedidos do ano de 1996*/
 /*--------------------------------------------------------------*/
+
+
 select TOP 6 *
 from Pedidos
 where YEAR(DataPed)= '1996'
 order by DataPed DESC/* OBS: Com esta linha ele mostra decrescente do último pedido de 1996 ao sexto pedido*/
 /* Exiba o nome e o cargo de todos os funcionários dos EUA e o contato e o cargo de todos os fornecedores dos EUA(OBS: Utilize Union)*/
+
+
 /*--------------------------------------------------------------*/
 Select Nome as 'Nome', Cargo as 'Cargo', 'Funcionarios' as tipo
 from Funcionarios
@@ -2982,6 +2998,8 @@ Select Contato as 'Contato', Cargo as 'Cargo', 'Fornecedores' as tipo
 from Fornecedores
 where Pais = 'EUA'
 /* Apresente nome, contato e país de todos de todos os clientes do Brasil e da Alemanha(OBS: Utilize Union)*/
+
+
 /*--------------------------------------------------------------*/
 select Nome as 'Nome', Contato as 'Contato', Pais as 'País', 'Clientes' as tipo/* OBS: Neste caso não precisava de as tipo, pois tipo é o mesmo("Clientes")*/
 from Clientes
@@ -2991,6 +3009,8 @@ select Nome as 'Nome', Contato as 'Contato', Pais as 'País', 'Clientes' as tipo
 from Clientes
 where Pais = 'Alemanha'
 /* Exiba nome, contato e cidade de todos od clientes de Madrid e Paris(OBS: Utilize Union)*/
+
+
 /*--------------------------------------------------------------*/
 Select Nome as 'Nome', Contato as 'Contato', Cidade as 'Cidade', 'Clientes' as tipo
 from Clientes
@@ -3000,6 +3020,8 @@ Select Nome as 'Nome', Contato as 'Contato', Cidade as 'Cidade', 'Clientes' as t
 from Clientes
 where Cidade = 'Paris'
 /* Mostre a descrição e o preço dos produtos das categorias 2 e 4(OBS: Utilize Union)*/
+
+
 /*--------------------------------------------------------------*/
 /* OBS: Este exercício também pode ser utilizado "or", pois a tabela é a mesma*/
 Select Descr as 'Descrição', Preco as 'Preço', 'Produtos' as tipo
@@ -3010,6 +3032,8 @@ Select Descr as 'Descrição', Preco as 'Preço', 'Produtos' as tipo
 from Produtos
 where CodCategoria = 4
 /* Exiba o nome, o cargo e o país de todos os funcionários do Reino Unido e o contato, o cargo e o país de todos os fornecedores da França*/
+
+
 /*--------------------------------------------------------------*/
 Select Nome as 'Nome', Cargo as 'Cargo', Pais as 'Pais', 'Funcionarios' as tipo
 from Funcionarios
@@ -3092,3 +3116,59 @@ FROM Funcionarios
 WHERE EXISTS (SELECT *
 		FROM Fornecedores
 		Where Pais='Brasil')
+
+
+
+
+
+----- 1. Mostre todos os dados dos pedidos dos clientes da Alemanha
+
+SELECT * FROM Pedidos 
+where EXISTS (SELECT * FROM Clientes where Pais ='Alemanha')
+
+
+---2. Exiba todos os produtos da categoria Condimentos.
+
+	
+		select * From Produtos 
+	where CodCategoria IN ( SELECT CodCategoria 
+					FROM Categorias
+					WHERE Descr = 'Condimentos')
+
+				
+---3. Mostre a descrição de todos os produtos que NÃO são fornecidos por fornecedores dos EUA.
+	select Descr From Produtos 
+	where CodFor IN ( SELECT CodFor 
+					FROM Fornecedores
+					WHERE Pais != 'EUA')
+
+
+---4. Apresente a descrição de todos produtos que NÃO fizeram parte dos pedidos de março de 1997.
+	SELECT Descr FROM Produtos
+		WHERE CodProd NOT IN( SELECT CodProd from DetalhesPed 
+							WHERE NumPed IN( SELECT NumPed 
+							from Pedidos where MONTH(DataPed) = 3
+							and YEAR(DataPed) =1997 ))
+						
+	
+---5. Exiba o código, a descrição e o preço do produto mais barato.
+
+select * from Produtos
+	SELECT CodProd, Descr, Preco From 
+	Produtos where Preco = (SELECT MIN(Preco) FROM Produtos)
+
+
+--6. Exiba o nome e os salários dos funcionários que recebem o maior salário
+
+
+	select Nome, Salario from Funcionarios where Salario = (select MAX(Salario) FROM Funcionarios)
+
+--7. Mostre o nome e os salários dos funcionários que recebem o menor e o maior salários em ordem de salário.
+
+	select Nome, Salario From Funcionarios 
+	WHERE EXISTS (select MIN(Salario), 
+				MAX(Salario)  FROM Funcionarios)
+				ORDER BY Salario
+	
+
+
