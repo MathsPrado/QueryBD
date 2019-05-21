@@ -3124,7 +3124,7 @@ WHERE EXISTS (SELECT *
 ----- 1. Mostre todos os dados dos pedidos dos clientes da Alemanha
 
 SELECT * FROM Pedidos 
-where EXISTS (SELECT * FROM Clientes where Pais ='Alemanha')
+where CodCli (SELECT CodCli FROM Clientes where Pais ='Alemanha')
 
 
 ---2. Exiba todos os produtos da categoria Condimentos.
@@ -3147,13 +3147,12 @@ where EXISTS (SELECT * FROM Clientes where Pais ='Alemanha')
 	SELECT Descr FROM Produtos
 		WHERE CodProd NOT IN( SELECT CodProd from DetalhesPed 
 							WHERE NumPed IN( SELECT NumPed 
-							from Pedidos where MONTH(DataPed) = 3
-							and YEAR(DataPed) =1997 ))
+											from Pedidos where MONTH(DataPed) = 3
+											and YEAR(DataPed) =1997 ))
 						
 	
 ---5. Exiba o código, a descrição e o preço do produto mais barato.
 
-select * from Produtos
 	SELECT CodProd, Descr, Preco From 
 	Produtos where Preco = (SELECT MIN(Preco) FROM Produtos)
 
@@ -3170,5 +3169,80 @@ select * from Produtos
 				MAX(Salario)  FROM Funcionarios)
 				ORDER BY Salario
 	
+
+
+------------------FormaCorreta--------------------------------------------------------------------------------
+	SELECT Nome, Salario
+	from Funcionarios
+	WHERE Salario = (SELECT MAX (salario)
+					FROM Funcionarios)
+	OR Salario = (SELECT MIN(Salario)
+				  FROM Funcionarios)
+	ORDER BY Salario
+
+
+	------------------------------------------------------------------------------------------------------------
+
+	---8------Exiba o código, a descrição e o preço de todos os produtos que tenham preço superior ao preço médio.-------
+
+	SELECT CodProd, Descr, Preco
+	FROM Produtos
+	WHERE Preco>(SELECT AVG(Preco)
+					FROM Produtos)
+
+
+
+--9 Exiba nome, sobrenome, cargo e salário de todos os representantes de vendas cujos salários sejam inferiores aos de todos os gerentes e coordenadores.------------
+
+SELECT Nome, Sobrenome, Cargo, Salario
+From Funcionarios
+WHERE Cargo ='Representante de Vendas'
+AND Salario < ALL( SELECT Salario
+					FROM Funcionarios
+					WHERE Cargo LIKE 'Gerente%' OR Cargo LIKE 'Cordenadores%')
+
+--------------------------------------------------------
+
+--10.Apresente nome, sobrenome, cargo e salário de todos os coordenadores cujos salários sejam superiores aos de 
+--algum dos representantes de vendas.
+
+
+Select Nome, Sobrenome, Cargo, Salario
+From Funcionarios
+WHERE Cargo LIKE 'Coordenador%'
+AND Salario > ANY (SELECT Salario
+					FROM Funcionarios
+					WHERE Cargo = 'Representante de Vendas')
+
+
+------11. Mostre o nome dos funcionários e todos os dados dos pedidos que realizaram, cujo valor do 
+------frete esteja acima da média dos valores dos fretes.
+
+
+
+SELECT F.Nome, P.*
+FROM Funcionarios F , Pedidos P
+WHERE F.CodFun = p.CodFun
+AND P.Frete > (SELECT AVG(Frete)
+				FROM Pedidos)
+
+
+--12.Exiba todos os dados dos produtos com preço menor que todos os produtos da categoria "confeitos".
+
+
+SELECT * 
+FROM Produtos
+WHERE Preco < ALL (select Preco
+					From Produtos
+					WHERE CodCategoria In (SELECT CodCategoria From Categorias WHERE Descr = 'Confeitos'))
+
+--------------------View-----------------------------------------------------------------------------------
+
+CREATE VIEW Salario_Func as 
+SELECT Nome, Sobrenome, Salario
+FROM Funcionarios
+
+go
+DROP VIEW Salario_Func
 
 
