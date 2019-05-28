@@ -3579,3 +3579,113 @@ exec INSERE_DETAHLES_PED 0,0,0,0,0
 DROP PROC INSERE_DETAHLES_PED
 
 ----------------------------------------------------------
+
+
+--Execute cada uma das procedures criadas. 
+--1. Crie uma stored procedure 'Busca_Func' que receba o código do funcionário e retorne seu nome, sobrenome e cargo. 
+	CREATE PROC BUSCA_FUNC
+	@CODFUNC int
+	AS 
+	SELECT Nome, Sobrenome, Cargo
+	FROM Funcionarios
+	WHERE  CodFun = @CODFUNC 
+
+	--- EXECUTE  BUSCA_FUNC 3
+
+
+--2. Crie a stored procedure "Funcionarios_Cargo" que, dado um cargo, retorne todos os funcinários que tenham esse cargo. 
+
+	CREATE PROC FUNCIONARIOS_CARGO
+	@CARGO varchar(50)
+	AS 
+	IF(NOT EXISTS( SELECT Cargo FROM Funcionarios WHERE Cargo = @CARGO))
+		PRINT 'NÃO EXISTE FUNC NESSE CARGO!'
+	ELSE
+		SELECT *
+		FROM Funcionarios
+		WHERE @CARGO = Cargo
+
+	EXECUTE FUNCIONARIOS_CARGO "ESTAGIARIO SENIOR"
+	EXECUTE FUNCIONARIOS_CARGO "Representante de Vendas"
+
+--3. Crie a stored procedure "Insere_Fornec" que insira um registro na tabela de fornecedores. 
+
+		SELECT * FROM Fornecedores	
+
+	CREATE PROC INSERT_FORNEC
+	@EMPRESA VARCHAR(50),
+	@CONTATO VARCHAR(50),
+	@CARGO VARCHAR(50),
+	@ENDERECO VARCHAR(50),
+	@CIDADE VARCHAR(50),
+	@CEP VARCHAR(8),
+	@PAIS VARCHAR(15)
+	AS
+	INSERT INTO Fornecedores
+	VALUES ( @EMPRESA, @CONTATO, @CARGO, @ENDERECO, @CIDADE, @CEP, @PAIS )
+
+	EXEC INSERT_FORNEC 'PRADO', '4545','SENIOR','SP','JUNDIAI','12345678','EUA' 
+
+--4. Crie a stored procedure "Exclui_Produto" que, dado um código de produto, exclua-o. 
+
+		CREATE PROC exclui_produto
+	@CODPRODUTO varchar(50)
+	AS 
+	IF(NOT EXISTS( SELECT CodProd FROM Produtos WHERE CodProd = @CODPRODUTO))
+		PRINT 'NÃO EXISTE ESSE PRODUTO CADASTRADO!'
+	ELSE
+		BEGIN
+			DELETE FROM Produtos WHERE CodProd = @CODPRODUTO
+			PRINT 'EXCLUIDO COM SUCESSO'
+		END;
+
+		EXEC exclui_produto 4449494
+		EXEC exclui_produto 77
+		
+
+--5. Construa a stored procedure "Aumenta_Salario" que, dados um código de funcionário e um percentual,
+--aumente o valor do salário do funcionário na quantidade do percentual fornecido. Se nenhum código for 
+--informado, todos os salários serão alterados. 
+
+
+CREATE PROCEDURE AUMENTA_SALARIO
+@CODFUN INT,
+@PERCAUM DECIMAL (5,2)
+AS
+	IF(@CODFUN = 0)
+		UPDATE Funcionarios SET Salario = Salario + ( Salario * @PERCAUM)
+	ELSE
+		UPDATE Funcionarios SET Salario = Salario + ( Salario * @PERCAUM)
+			WHERE CodFun = @CODFUN
+
+EXEC AUMENTA_SALARIO 5, 0.0 --- UM FUNCIONARIO
+
+EXEC AUMENTA_SALARIO 0, 0.0  -- TODOS
+ 
+--Teste cada uma das funções criadas. 
+--1. Crie uma função que, informada uma data, retorne o dia da semana.
+
+	CREATE FUNCTION RETORNA_DIA_DA_SEMANA (@DATA DATE)
+		RETURNS VARCHAR(10)
+	AS
+		BEGIN
+			RETURN(DATENAME(WEEKDAY , @DATA));
+			END;
+
+	SELECT dbo.RETORNA_DIA_DA_SEMANA('2009-05-01')
+
+
+--2. Crie uma função que retorne a soma do intervalo informado (valor mínimo e valor máximo). 
+
+	
+--3. Apresente uma função que, a partir de quatro notas informadas, retorne a média dessas notas. 
+--4. Construa uma função que retorne a área de um quadrado, sabendo que somente um lado é informado. 
+--5. Crie uma função que retorne a soma dos números pares informados (número inicial e número final). 
+ 
+--Teste cada um dos gatilhos criadas. 
+
+
+
+--1. Elabore um gatilho que mostre uma mensagem a cada nova inserção de fornecedor. 
+--2. Construa um gatilho 'Mensagem_Exclui_Pedido' que mostre uma mensagem assim que um pedido for excluído. 
+ 
