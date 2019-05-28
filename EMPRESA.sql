@@ -3238,11 +3238,344 @@ WHERE Preco < ALL (select Preco
 
 --------------------View-----------------------------------------------------------------------------------
 
-CREATE VIEW Salario_Func as 
+
+----- Cria uma visão chamada 'Salario_Func' que mostre apenas nome, sobrenome, e salarios dos funcionarios
+CREATE VIEW Salario_Func AS 
 SELECT Nome, Sobrenome, Salario
 FROM Funcionarios
 
-go
+----- Utilizando a visão 'Salario_Func' que mostre apenas os funcionarios que possuem salario superior a 7000
+SELECT * 
+FROM Salario_Func
+WHERE Salario > 7000
+
+----	ALTERAR VIEW
+---- Altera a visão chamada 'Salario_Func' para mostrar apenas nome, sobrenome, cargo e salario dos funcionarios
+ALTER VIEW Salario_Func AS
+SELECT Nome, Sobrenome, Cargo, Salario
+FROM Funcionarios
+
+---- Utilizando a visão 'Salario_Func' que mostre apenas os funcionarios que possuem salario supeior a 7000
+SELECT* FROM Salario_Func
+WHERE Salario > 7000
+
+
+----APAGAR VIEW
+---- Remove a visão denominada 'Salario_Func'
+
 DROP VIEW Salario_Func
 
 
+--------------------------------------------------------------------------------------------
+
+-- 1. Crie a visão "Preco_Baixo" que exiba o código, a descrição e o preço de todos os produtos que tenham preço inferior ao preço médio.
+CREATE VIEW Preco_Baixo AS
+SELECT CodProd, Descr, Preco
+FROM Produtos
+WHERE Preco < (SELECT AVG(Preco)FROM Produtos)
+GO
+
+-- 2. Usando a visão "Preco_Baixo", mostre todos os produtos começados com a letra "C".
+SELECT* FROM Preco_Baixo
+WHERE Descr Like 'C%'
+GO
+
+-- 3. Crie a visão "Funcionarios_Cargo" que mostre o cargo e a quantidade de funcionarios por cargo.
+CREATE VIEW Funcionarios_Cargo AS
+SELECT Cargo, COUNT(*) AS FuncionariosPorCargo
+FROM Funcionarios
+GROUP BY Cargo
+GO
+
+-- 4. Usando a visão "Funcionarios_Cargo", mostre o cargo com o maior numero de funcionarios.
+SELECT Cargo
+FROM Funcionarios_Cargo
+WHERE FuncionariosPorCargo=(SELECT MAX(FuncionariosPorCargo) FROM Funcionarios_Cargo)
+GO
+
+-- 5. Crie a visão "Produtos_Categoria" que exiba a descrição do produto e a descrição de sua categoria.
+CREATE VIEW Produtos_Categoria AS
+SELECT P.Descr AS DescrProduto, C.Descr AS DescrCategoria
+FROM Produtos P, Categorias C
+WHERE P.CodCategoria = C.CodCategoria
+GO
+
+-- 6. Usando a visão "Produtos_Categoria", exiba a categoria e a quantidade de produtos por categoria.
+SELECT DescrCategoria, COUNT(*) AS QuantidadeDeProdutosPorCategoria
+FROM Produtos_Categoria
+GROUP BY DescrCategoria
+
+-- 7. Crie a visão "Clentes_Resumo" que mostre código, nome, contato, cargo e país de todos os clientes.
+CREATE VIEW Clientes_Resumo AS
+SELECT CodCli, Nome, Contato, Cargo, Pais
+FROM Clientes
+GO
+
+-- 8. Crie a visão "Pedidos_Resumo_abr97" que mostre número do pedido, código do cliente e data de entrega de todos os pedidos entregues em abril de 1997.
+CREATE VIEW Pedidos_Resumo_abr97 AS
+SELECT NumPed, CodCli, DataEntrega
+FROM Pedidos
+WHERE YEAR(DataEntrega) =1997
+AND MONTH(DataEntrega) = 4
+GO
+
+-- 9. Usando as visões "Clientes_Resumo" e "Pedidos_Resumo_abr97", mostre todos os clientes que tiveram pedidos entregues em abril de 1997.
+SELECT C.*
+FROM Clientes_Resumo C INNER JOIN Pedidos_Resumo_abr97 P
+ON C.CodCli = P.CodCli
+GO
+
+-- 10. Usando a visão "Cliente_Resumo", crie a visão "Clientes_Resumo_W" que mostre todos os clientes que tenham o nome começado por W.
+CREATE VIEW Clientes_Resumo_W AS
+SELECT * FROM Clientes_Resumo
+WHERE Nome Like 'W%'
+GO
+
+-- 11. Apague algumas das visões criadas.
+--DROP VIEW Preco_Baixo
+--DROP VIEW Funcionarios_Cargo
+--DROP VIEW Produtos_Categoria
+--DROP VIEW Clientes_Resumo
+--DROP VIEW Pedidos_Resumo_abr97
+--DROP VIEW Clientes_Resumo_W
+--GO
+
+---------------------------------------- PROGRAMAÇÃO -------------------------------------------------------------------
+
+
+--VARIAVEIS (DECLARE)
+
+DECLARE @a INT=1;
+
+DECLARE @a INT, @b INT;
+SET @a = 1;
+SELECT @b = 2;
+
+
+-- IF/ELSE
+
+DECLARE @a INT = 2, @b INT = 1;
+IF @a > @b
+BEGIN 
+	PRINT @a; -- apresentação de conteudo
+	PRINT 'é maior que ';
+	PRINT @b;
+	END
+ELSE
+	BEGIN -- delimita um bloco de instruções
+		PRINT @a;
+		PRINT 'não é maior que';
+		PRINT @b;
+		END
+	PRINT 'Continua..';
+
+--------------- CASE--------------------------------------------------------------------
+
+
+--EXIBE TAMBEM O NOME DO DIA DA SEMANA DA DATA DE NASCIMENTO DO FUNCIONARIO
+
+SELECT CodFun, Nome, DataNasc,
+	CASE DATEPART(WEEKDAY, DataNasc)
+		WHEN 1 THEN 'Domingo'
+		WHEN 2 THEN 'Segunda-Feira'
+		WHEN 3 THEN 'Terça-Feira'
+		WHEN 4 THEN 'Quarta-Feira'
+		WHEN 5 THEN 'Quinta-Feira'
+		WHEN 6 THEN 'Sexta-Feira'
+		WHEN 7 THEN 'Sábado'
+	END AS dia_da_Semana
+FROM Funcionarios
+
+
+------- WHILE  ------------------------------------------------------------
+
+DECLARE @dezena INT, @i INT=0;
+WHILE @i <6
+	BEGIN
+		SET @dezena =60 * RAND();-- RAND função matematica que retorna um numero aleatorio (random)
+		PRINT @dezena;
+		SET @i += 1; -- OU SET @i = @i +1;
+		END
+	PRINT 'BOA SORTE !!!';
+
+
+
+
+
+
+---- UTILIZE O BD EMPRESAS --- EXERCÍCIOS
+
+-- 1. Mostre números pares inteiros de 100 até 0.
+ 
+-- 2. Dados os números inteiros a=1, b=2 e c=3, mostre-os em ordem decrescente.
+
+-- 3. Sorteie dois números de 0 a 10 e mostre os números sorteados e se são pares ou ímpares.
+
+
+-- 4. Exiba a quantidade e o valor do desconto para os pedidos de acordo com a quantidade.
+-- a. Quantidade <10, desconto =0
+-- b. Quantidade <30, desconto =3
+-- c. Quantidade <50, desconto =5
+-- d. Quantidade <70, desconto =7
+-- e. Senão, desconto =9
+
+
+-- 5. Sorteie quantos números serão lidos randomicamente e exiba somente os números pares.
+-- 6. Mostre todos os números inteiros múltiplos de 10, de 0 a 1000.
+-- 7. Para cada cliente mostre nome, país e informe "importação" para países diferentes do Brasil e "exportação" para clientes do Brasil.
+-- 8. Atribua seu nome a uma variável e exiba seu nome e a quantidade de caracteres
+
+--------------------------------------------------------------------------------------------------------------
+
+
+
+
+DECLARE @teste INT =0;
+SET @teste= 60 * Rand();
+PRINT @teste
+
+-------------------------------------------------------------
+
+-----------------------------------------------------------------------------------------------------------
+
+---------------- 3- Sorteie dois números de 0 a 10 e mostre os números sorteados e se são pares ou impares
+
+--DECLARE @NUM1 INT, @NUM2 INT ;
+--SET @NUM1 = ROUND(10 * RAND(),0,1)
+--SET @NUM2 = ROUND (10 * RAND(), 0,1)
+--IF((@NUM1%2)=0)
+
+--	PRINT CONVERT (CHAR(2), @NUM1) + 'o NUMERO 1 E PAR!';
+
+--ELSE
+
+--	PRINT CONVERT (CHAR(2), @NUM1) + 'O NUMERO 1 E IMPAR!';
+
+--IF((@NUM2%2)=0)
+
+--		PRINT CONVERT (CHAR(2), @NUM2) + 'o NUMERO 2 E PAR!';
+
+--ELSE
+
+--	PRINT CONVERT (CHAR(2), @NUM2) + 'O NUMERO 2 E IMPAR!';
+	
+
+
+	-- 4 EXIBA A QUNATIDADE E O VALOR DO DESCONTO PARA OS PEDIDOS DE ACORDO COM A QUANTIDADE
+	--A QUANTIDADE <10, DESCONTO =0
+	--B QUANTIDADE <30, DESCONTO =3
+	--C QUANTIDADE <50, DESCONTO =5
+	--D QUANTIDADE <70, DESCONTO =7
+	--E- SENÃO, DESCONTO =9
+
+	--SELECT QTDE,
+	--CASE
+	--	WHEN QTDE <10 THEN 0
+	--	WHEN QTDE <30 THEN 3
+	--	WHEN QTDE <50 THEN 5
+	--	WHEN QTDE <70 THEN 7
+	--	ELSE 9
+	--END AS DESCONTOPEDIDO
+	--FROM DETALHESPED
+
+	---5 SORTEIE QUANTOS NUMEROS SERAO LIDOS RANDOMICAMENTE E EXIBA SOMENTE OS NUMEROS PARES
+
+	--DECLARE @I INT, @LIDOS INT, @NUM INT;
+	--SET @I =0;
+	--SET @LIDOS = ROUND (10 * RAND(), 0,1);
+	--PRINT 'QUANTIDADES DE NUMEROS LIDOS: ' + CONVERT(CHAR(2), @LIDOS)
+	--WHILE (@I < @LIDOS)
+	--	BEGIN
+	--		SET @NUM = ROUND(100 * RAND(), 0,1);
+	--		IF(@NUM%2)=0
+	--			PRINT (@NUM);
+	--		SET @I+= 1;
+	--	END
+
+	---6 MOSTRE TODOS NUMEROS INTEIROS MULTIPLOS DE 10, DE 0 A 1000
+
+
+	--DECLARE @I INT;
+	--SET @I =0;
+	--WHILE(@I <=1000)
+	--	BEGIN
+	--	IF(( @I%10)=0)
+	--		PRINT(@I);
+	--	SET @I = @I + 1;
+	--	END
+
+
+
+	---7 PARA CADA CLIENTE MOSTRE NOME, PAIS E INFORME "IMPORTAÇÃO" PARA PAISES DIFERENTES DO BRASIL E "EXPORTAÇÃO" PARA CLIENTE
+	--- DO BRASIL
+
+	--SELECT Nome, Pais,
+	--	CASE(Pais)
+	--		WHEN 'BRASIL' THEN 'EXPORTAÇÃO'
+	--		ELSE'IMPORTAÇÃO'
+	--	END AS SITUACAO
+	--FROM Clientes
+
+	---8 ATRIBUA SEU NOME A UMA VARIAVEL E EXIBA SEU NOME E A QUANTIDADE DE CARACTERS
+
+	--DECLARE @NOME VARCHAR(50);
+	--SET @NOME = 'MATHEUS PRADO DE LIMA';
+	--PRINT (@NOME);
+	--PRINT(LEN(@NOME));                                 --LEN (QUANTIDADE DE CARACTER)
+
+
+
+	----------STORED PROCEDURE------------------------
+
+	CREATE PROCEDURE BUSCA_CLIENTES
+		@NOMEBUSCA VARCHAR(50)
+	AS
+		SELECT CodCli, Nome
+		FROM Clientes
+		WHERE Nome LIKE '%' + @NOMEBUSCA + '%' ;
+
+
+
+	------------------------------------
+
+
+
+	CREATE PROC INSERE_DETAHLES_PED
+		@NUMPED INT,
+		@CODPROD INT,
+		@PRECO MONEY,
+		@QTDE SMALLINT,
+		@DESCONTO FLOAT
+	AS
+		INSERT INTO DetalhesPed
+		VALUES
+		(@NUMPED, @CODPROD, @PRECO, @QTDE, @DESCONTO)
+
+	--------------------------ALTER----------
+
+	ALTER PROC INSERE_DETAHLES_PED
+		@NUMPED INT,
+		@CODPROD INT,
+		@PRECO MONEY,
+		@QTDE SMALLINT,
+		@DESCONTO FLOAT
+	AS
+	IF(@NUMPED <>0) AND (@CODPROD <> 0)
+		INSERT INTO DetalhesPed
+		VALUES
+		(@NUMPED, @CODPROD, @PRECO, @QTDE, @DESCONTO)
+	ELSE
+		PRINT 'VALORES INVALIDOS'
+			
+---------------------------------------------------------
+
+EXECUTE BUSCA_CLIENTES 'ana'
+
+exec INSERE_DETAHLES_PED 0,0,0,0,0
+
+
+----------------------------------------------------------
+
+DROP PROC INSERE_DETAHLES_PED
+
+----------------------------------------------------------
