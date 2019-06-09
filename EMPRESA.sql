@@ -3428,8 +3428,6 @@ WHILE @i <6
 --------------------------------------------------------------------------------------------------------------
 
 
-
-
 DECLARE @teste INT =0;
 SET @teste= 60 * Rand();
 PRINT @teste
@@ -3539,7 +3537,6 @@ PRINT @teste
 	------------------------------------
 
 
-
 	CREATE PROC INSERE_DETAHLES_PED
 		@NUMPED INT,
 		@CODPROD INT,
@@ -3590,11 +3587,11 @@ DROP PROC INSERE_DETAHLES_PED
 	FROM Funcionarios
 	WHERE  CodFun = @CODFUNC 
 
-	--- EXECUTE  BUSCA_FUNC 3
+	EXECUTE  BUSCA_FUNC 2
 
 
 --2. Crie a stored procedure "Funcionarios_Cargo" que, dado um cargo, retorne todos os funcinários que tenham esse cargo. 
-
+	
 	CREATE PROC FUNCIONARIOS_CARGO
 	@CARGO varchar(50)
 	AS 
@@ -3658,10 +3655,11 @@ AS
 		UPDATE Funcionarios SET Salario = Salario + ( Salario * @PERCAUM)
 			WHERE CodFun = @CODFUN
 
-EXEC AUMENTA_SALARIO 5, 0.0 --- UM FUNCIONARIO
+EXEC AUMENTA_SALARIO 5, 2.0 --- UM FUNCIONARIO
 
 EXEC AUMENTA_SALARIO 0, 0.0  -- TODOS
  
+ select * from Funcionarios
 --Teste cada uma das funções criadas. 
 --1. Crie uma função que, informada uma data, retorne o dia da semana.
 
@@ -3677,15 +3675,54 @@ EXEC AUMENTA_SALARIO 0, 0.0  -- TODOS
 
 --2. Crie uma função que retorne a soma do intervalo informado (valor mínimo e valor máximo). 
 
+
+	CREATE FUNCTION RETORNA_SOMA_INTERVALO 
+	(
+		@primeiro int, 
+		@segundo int
+	)
+	returns varchar(MAX)
+		as
+			BEGIN 
+					declare @valor int;
+					SET @valor = @primeiro - @segundo;
+					RETURN @valor
+					END;
+			
+		select dbo.RETORNA_SOMA_INTERVALO (17,12)
+
 	
---3. Apresente uma função que, a partir de quatro notas informadas, retorne a média dessas notas. 
+--3. Apresente uma função que, a partir de quatro notas informadas, retorne a média dessas notas.
+
+		CREATE FUNCTION RETORNA_MEDIA
+	(
+		@primeiro FLOAT, 
+		@segundo FLOAT,
+		@terceiro FLOAT,
+		@quarto float
+	)
+		returns varchar(MAX)
+		as
+			BEGIN 
+				DECLARE @MEDIA FLOAT;
+				set @MEDIA = (@primeiro + @segundo + @terceiro + @quarto) / 4;
+				RETURN @MEDIA;
+				END;
+
+				select dbo.RETORNA_MEDIA (10,10,8,8)
+
 --4. Construa uma função que retorne a área de um quadrado, sabendo que somente um lado é informado. 
+	
+
 --5. Crie uma função que retorne a soma dos números pares informados (número inicial e número final). 
- 
+	
+
+
 --Teste cada um dos gatilhos criadas. 
 
 
 
 --1. Elabore um gatilho que mostre uma mensagem a cada nova inserção de fornecedor. 
+
 --2. Construa um gatilho 'Mensagem_Exclui_Pedido' que mostre uma mensagem assim que um pedido for excluído. 
  
