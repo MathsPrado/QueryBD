@@ -2929,7 +2929,8 @@ select distinct c.descr, p.descr
 from categorias c, produtos p, detalhesped dp, pedidos pd
 where (c.codcategoria=p.codcategoria) and (p.codprod=dp.codprod) and (dp.numped=pd.numped)and (dp.qtde>=50) and (year(pd.dataentrega)=1997)
 order by c.descr desc
-/* Aqui começam os exercícios feitos por mim*/
+
+/* */
 /* Mostre a descrição e preço do produto mais caro*/
 /*--------------------------------------------------------------*/
 
@@ -2971,6 +2972,8 @@ order by Salario DESC
 Select TOP 1 nome as 'Nome', Sobrenome as 'Sobrenome'
 from Funcionarios
 order by DataNasc
+
+
 /* Mostre todos os dados dos cinco pedidos mais recentes*/
 /*--------------------------------------------------------------*/
 
@@ -2978,8 +2981,12 @@ order by DataNasc
 select TOP 5 *
 from Pedidos
 order by DataPed DESC
+
+
 /* Mostre todos os dados dos seis últimos pedidos do ano de 1996*/
 /*--------------------------------------------------------------*/
+
+
 
 
 select TOP 6 *
@@ -2989,7 +2996,12 @@ order by DataPed DESC/* OBS: Com esta linha ele mostra decrescente do último ped
 /* Exiba o nome e o cargo de todos os funcionários dos EUA e o contato e o cargo de todos os fornecedores dos EUA(OBS: Utilize Union)*/
 
 
+
+
 /*--------------------------------------------------------------*/
+
+
+
 Select Nome as 'Nome', Cargo as 'Cargo', 'Funcionarios' as tipo
 from Funcionarios
 where Pais = 'EUA'
@@ -2998,6 +3010,7 @@ Select Contato as 'Contato', Cargo as 'Cargo', 'Fornecedores' as tipo
 from Fornecedores
 where Pais = 'EUA'
 /* Apresente nome, contato e país de todos de todos os clientes do Brasil e da Alemanha(OBS: Utilize Union)*/
+
 
 
 /*--------------------------------------------------------------*/
@@ -3047,7 +3060,7 @@ where Pais = 'França'
 
 select Nome, Contato,Cargo
 FROM Clientes
-WHERE CodCli IN(select CodCli
+WHERE CodCli IN (select CodCli
 	FROM Pedidos
 	WHERE DataPed BETWEEN '1996-08-01' AND '1996-08-31')
 
@@ -3089,13 +3102,16 @@ where Preco = (SELECT MAX(Preco)
 --- Subconsulta com Operadores ALL ou ANY
 ---ALL = MAIOR QUE TODOS
 
+
+
 SELECT Nome, Sobrenome, Cargo, Salario
 FROM Funcionarios
 WHERE Cargo LIKE '%Representante de Vendas%'
 AND Salario > ALL (SELECT Salario
-					FROM Funcionarios
+					FROM Funcionarios	
 					WHERE Cargo LIKE '%Gerente%'
 					OR Cargo LIKE '%Coordenador%')
+
 
 ----COM ANY--------------------------------------------------------------------------------
 ----- ANDY = MAIOR QUE PELO MENOS UM
@@ -3111,11 +3127,13 @@ AND Salario > ANY (SELECT Salario
 
 ---SUBCONSULTA CORRELACIONADAS COM EXIST----------------------------------------------------
 
-SELECT Nome
+SELECT Nome, Pais
 FROM Funcionarios
 WHERE EXISTS (SELECT *
 		FROM Fornecedores
-		Where Pais='Brasil')
+		Where Pais='EUA')
+
+		select * from Fornecedores
 
 
 
@@ -3124,7 +3142,7 @@ WHERE EXISTS (SELECT *
 ----- 1. Mostre todos os dados dos pedidos dos clientes da Alemanha
 
 SELECT * FROM Pedidos 
-where CodCli (SELECT CodCli FROM Clientes where Pais ='Alemanha')
+where CodCli in (SELECT CodCli FROM Clientes where Pais ='Alemanha')
 
 
 ---2. Exiba todos os produtos da categoria Condimentos.
@@ -3660,6 +3678,8 @@ EXEC AUMENTA_SALARIO 5, 2.0 --- UM FUNCIONARIO
 EXEC AUMENTA_SALARIO 0, 0.0  -- TODOS
  
  select * from Funcionarios
+
+
 --Teste cada uma das funções criadas. 
 --1. Crie uma função que, informada uma data, retorne o dia da semana.
 
@@ -3694,6 +3714,8 @@ EXEC AUMENTA_SALARIO 0, 0.0  -- TODOS
 	
 --3. Apresente uma função que, a partir de quatro notas informadas, retorne a média dessas notas.
 
+
+
 		CREATE FUNCTION RETORNA_MEDIA
 	(
 		@primeiro FLOAT, 
@@ -3709,14 +3731,29 @@ EXEC AUMENTA_SALARIO 0, 0.0  -- TODOS
 				RETURN @MEDIA;
 				END;
 
-				select dbo.RETORNA_MEDIA (10,10,8,8)
+				select dbo.RETORNA_MEDIA (0,10,10,10)
 
 --4. Construa uma função que retorne a área de um quadrado, sabendo que somente um lado é informado. 
+	
 	
 
 --5. Crie uma função que retorne a soma dos números pares informados (número inicial e número final). 
 	
+		alter FUNCTION CONTA_PARES
+	(
+		@primeiro DECIMAL, 
+		@segundo DECIMAL
+	)
+		returns varchar(MAX)
+		as
+			BEGIN 
+				DECLARE @MEDIA DECIMAL;
+				IF(@primeiro %2 = 0 and @segundo %2 = 1)
+					SET @MEDIA = @primeiro + @segundo;
+					RETURN @MEDIA;
+				END;
 
+				SELECT dbo.CONTA_PARES (4,2)
 
 --Teste cada um dos gatilhos criadas. 
 
@@ -3726,3 +3763,4 @@ EXEC AUMENTA_SALARIO 0, 0.0  -- TODOS
 
 --2. Construa um gatilho 'Mensagem_Exclui_Pedido' que mostre uma mensagem assim que um pedido for excluído. 
  
+
