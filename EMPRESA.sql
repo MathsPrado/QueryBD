@@ -3696,21 +3696,40 @@ EXEC AUMENTA_SALARIO 0, 0.0  -- TODOS
 --2. Crie uma função que retorne a soma do intervalo informado (valor mínimo e valor máximo). 
 
 
-	CREATE FUNCTION RETORNA_SOMA_INTERVALO 
+	--CREATE FUNCTION RETORNA_SOMA_INTERVALO 
+	--(
+	--	@primeiro int, 
+	--	@segundo int
+	--)
+	--returns varchar(MAX)
+	--	as
+	--		BEGIN 
+	--				declare @valor int;
+	--				SET @valor = @primeiro - @segundo;
+	--				RETURN @valor
+	--				END;
+			
+	--	select dbo.RETORNA_SOMA_INTERVALO (17,12)
+
+
+			CREATE FUNCTION RETORNA_SOMA_INTERVALO
 	(
 		@primeiro int, 
 		@segundo int
 	)
-	returns varchar(MAX)
-		as
-			BEGIN 
-					declare @valor int;
-					SET @valor = @primeiro - @segundo;
-					RETURN @valor
-					END;
-			
-		select dbo.RETORNA_SOMA_INTERVALO (17,12)
+	RETURNS INT
+	AS
+		BEGIN
+		DECLARE @SOMA INT =0;
+		WHILE @primeiro <= @segundo
+			BEGIN
+				SET @SOMA = @SOMA + @primeiro;
+				SET @primeiro = @primeiro + 1;
+				END;
+			RETURN @SOMA;
+			END
 
+			select dbo.RETORNA_SOMA_INTERVALO_PROF (2,4)	
 	
 --3. Apresente uma função que, a partir de quatro notas informadas, retorne a média dessas notas.
 
@@ -3748,12 +3767,12 @@ EXEC AUMENTA_SALARIO 0, 0.0  -- TODOS
 		as
 			BEGIN 
 				DECLARE @MEDIA DECIMAL;
-				IF(@primeiro %2 = 0 and @segundo %2 = 1)
+				IF(@primeiro %2 = 0 and @segundo %2 = 0)
 					SET @MEDIA = @primeiro + @segundo;
 					RETURN @MEDIA;
 				END;
 
-				SELECT dbo.CONTA_PARES (4,2)
+				SELECT dbo.CONTA_PARES (10,2)
 
 --Teste cada um dos gatilhos criadas. 
 
@@ -3764,3 +3783,36 @@ EXEC AUMENTA_SALARIO 0, 0.0  -- TODOS
 --2. Construa um gatilho 'Mensagem_Exclui_Pedido' que mostre uma mensagem assim que um pedido for excluído. 
  
 
+
+ /* operador like, alguns jeitos que achei na internet, a query não funciona pois não tem a tebela
+ mas serve de base e para entender;
+ se
+		A seguinte instrução SQL seleciona todos 
+	os clientes com um CustomerName que tenham "r" na segunda posição:
+
+			SELECT * FROM Customers
+			WHERE CustomerName LIKE '_r%';
+	
+
+		A seguinte instrução SQL seleciona todos os clientes com um CustomerName
+	que comece com "a" e tenha pelo menos 3 caracteres de comprimento:
+
+			SELECT * FROM Customers
+			WHERE CustomerName LIKE 'a__%';
+
+
+		A seguinte instrução SQL seleciona todos os 
+	clientes com um ContactName que começa com "a" e termina com "o":
+
+
+			SELECT * FROM Customers
+			WHERE ContactName LIKE 'a%o';
+
+
+	A seguinte instrução SQL seleciona todos os clientes
+	com um CustomerName que NÃO inicia com "a":
+
+	SELECT * FROM Customers
+	WHERE CustomerName NOT LIKE 'a%';
+
+	*/ 
