@@ -43,9 +43,9 @@ go
 select * from times where Nome like '%pau%'
 
 ------------------------------------------------------------6 ERROR
-select COUNT(uf) AS QUANTIDADE from times where uf='SP'
+select COUNT(uf) AS 'QUANTIDADE' from times where uf='SP'
 UNION
-SELECT Nome from Times where uf='SP'
+SELECT Nome as 'Nome'  from Times where uf='SP'
 
 
 ------------------------------------------------------------- 8
@@ -56,7 +56,15 @@ where YEAR(Data_Fundacao)='1996' AND MONTH(Data_fundacao)='07'
 --------------------------------------------------------------------------9
 SELECT  min(Investimento) as MENOR, MAX(Investimento) AS MAIOR FROM times
 
--------------------------------------------------------------------------------------- 10
+
+-------------------------------------------------------------------------------------------10
+update times
+set Investimento= Investimento *1.20
+WHERE Investimento>='20000' AND Investimento <= '50000'
+
+SELECT * FROM times
+
+-------------------------------------------------------------------------------------- 11
 use master
 drop database ClubeT
 
