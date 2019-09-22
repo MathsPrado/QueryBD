@@ -20,15 +20,15 @@ SET DATEFORMAT DMY
 go
 ------------------------------------------------------------3
 alter table times
-add	Investimento MONEY  DEFAULT 0.0
+add	Investimento money
 select * from times
 go
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------4
-insert into times( CodFor, Nome, Historia, Data_fundacao, uf, Investimento) values (100,'Perna de pau', 'Amigos que queriam aprender a jogar', '20/05/1997','SP', 111990 );             
-insert into times( CodFor, Nome, Historia, Data_fundacao, uf,Investimento) values (200,'Bolada','Ganhadores de rifas', '25/03/1996','PR', 1.44520 );
-insert into times( CodFor, Nome, Historia, Data_fundacao, uf,Investimento) values (130,'Julieta','Mulheres apaixonada por bola', '31/12/1998','SP', 266612 );
-insert into times( CodFor, Nome, Historia, Data_fundacao, uf,Investimento) values (074,'Trave de pau','Jogadores que quebram a trave nos jogos', '03/07/1996','SP', 97144 );
-insert into times( CodFor, Nome, Historia, Data_fundacao, uf,Investimento) values (005,'campiam','Acham que sempre serão os vencedores', '05/10/1998','PR', 555799 );
+insert into times( CodFor, Nome, Historia, Data_fundacao, uf, Investimento) values (100,'Perna de pau', 'Amigos que queriam aprender a jogar', '20/05/1997','SP', 1119.90 );             
+insert into times( CodFor, Nome, Historia, Data_fundacao, uf,Investimento) values (200,'Bolada','Ganhadores de rifas', '25/03/1996','PR', 1445.20 );
+insert into times( CodFor, Nome, Historia, Data_fundacao, uf,Investimento) values (130,'Julieta','Mulheres apaixonada por bola', '31/12/1998','SP', 2666.12 );
+insert into times( CodFor, Nome, Historia, Data_fundacao, uf,Investimento) values (074,'Trave de pau','Jogadores que quebram a trave nos jogos', '03/07/1996','SP', 971.44 );
+insert into times( CodFor, Nome, Historia, Data_fundacao, uf,Investimento) values (005,'campiam','Acham que sempre serão os vencedores', '05/10/1998','PR', 5557.99 );
 
 
 go
