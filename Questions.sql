@@ -38,14 +38,15 @@ order by Data_fundacao desc
 
 
 go
+----------------------------------------------------------------------------------6
+select uf , COUNT(*) FROM times GROUP BY uf HAVING uf = 'PR' 
+UNION
+select uf , COUNT(*) AS 'QUANTIDADE DE TIME' FROM times GROUP BY uf HAVING uf = 'SP' 
+
+
 
 -- -------------------------------------------------------   7
 select * from times where Nome like '%pau%'
-
-------------------------------------------------------------6 ERROR
-select COUNT(uf) AS 'QUANTIDADE' from times where uf='SP'
-UNION
-SELECT Nome as 'Nome'  from Times where uf='SP'
 
 
 ------------------------------------------------------------- 8
@@ -60,21 +61,25 @@ SELECT  min(Investimento) as MENOR, MAX(Investimento) AS MAIOR FROM times
 -------------------------------------------------------------------------------------------10
 update times
 set Investimento= Investimento *1.20
-WHERE Investimento>='20000' AND Investimento <= '50000'
+WHERE Investimento>='2000' AND Investimento <= '5000'
+
 
 SELECT * FROM times
-
 -------------------------------------------------------------------------------------- 11
 use master
+
 drop database ClubeT
 
 drop table times
 
 
 
------------------------------- exercicios aleatorios
-
-select DAY(Data_fundacao) AS DIA, MONTH(Data_fundacao) AS MES, YEAR(Data_fundacao) AS ANO FROM Times
 
 
-select Nome from Times where YEAR(Data_fundacao)='1997'
+DECLARE @Vares VARCHAR(100);
+
+SET @Vares='WTP CATION EXCHANGER';
+
+--SET @Var='DRAUGHT- WORKING MODE';
+
+--SET @Var='MCWP-TESTING-MODE PART1';

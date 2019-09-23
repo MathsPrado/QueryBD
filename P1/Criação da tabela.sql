@@ -47,7 +47,7 @@ VALUES
 GO
 -- UPDATE Funcionario SET cidade = 'jundiaí'
 
-
+select * from Funcionario
 
 --DELETE FROM Funcionario WHERE idFuncionario = 2 
 
