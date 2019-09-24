@@ -13,6 +13,7 @@ create table times
 	Historia varchar(250) NOT NULL,
 	Data_fundacao datetime NOT NULL,
 	uf char (2) NOT NULL,
+	salario DECIMAL (7,2) NULL,
 	PRIMARY KEY (CodFor)
 )
 
@@ -59,6 +60,8 @@ SELECT  min(Investimento) as MENOR, MAX(Investimento) AS MAIOR FROM times
 
 
 -------------------------------------------------------------------------------------------10
+3199,344
+
 update times
 set Investimento= Investimento *1.20
 WHERE Investimento>='2000' AND Investimento <= '5000'
@@ -71,6 +74,7 @@ use master
 drop database ClubeT
 
 drop table times
+
 
 
 
